@@ -12,7 +12,7 @@ void main() async {
     isShowAppOpenOnAppStateChange: false,
     adIdManager,
     unityTestMode: true,
-    adMobAdRequest: const AdRequest(),
+    adMobAdRequest: const  AdManagerAdRequest(),
     admobConfiguration: RequestConfiguration(testDeviceIds: []),
     fbTestingId: '73f92d66-f8f6-4978-999f-b5e0dd62275a',
     fbTestMode: true,
@@ -89,11 +89,7 @@ class _CountryListScreenState extends State<CountryListScreen> {
                 networkName: 'Unity Interstitial',
                 onTap: () => _showAd(AdNetwork.unity, AdUnitType.interstitial),
               ),
-              AdButton(
-                networkName: 'Applovin Interstitial',
-                onTap: () =>
-                    _showAd(AdNetwork.appLovin, AdUnitType.interstitial),
-              ),
+
               AdButton(
                 networkName: 'Available Interstitial',
                 onTap: () => _showAvailableAd(AdUnitType.interstitial),
@@ -119,10 +115,6 @@ class _CountryListScreenState extends State<CountryListScreen> {
                 onTap: () => _showAd(AdNetwork.unity, AdUnitType.rewarded),
               ),
               AdButton(
-                networkName: 'Applovin Rewarded',
-                onTap: () => _showAd(AdNetwork.appLovin, AdUnitType.rewarded),
-              ),
-              AdButton(
                 networkName: 'Available Rewarded',
                 onTap: () => _showAvailableAd(AdUnitType.rewarded),
               ),
@@ -131,7 +123,6 @@ class _CountryListScreenState extends State<CountryListScreen> {
                   AdNetwork.facebook,
                   AdNetwork.admob,
                   AdNetwork.unity,
-                  AdNetwork.appLovin,
                 ],
               ),
             ],

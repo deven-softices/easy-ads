@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:easy_ads_flutter/easy_ads_flutter.dart';
 import 'package:flutter/material.dart';
 
@@ -7,15 +6,13 @@ class EasySmartBannerAd extends StatefulWidget {
   final List<AdNetwork> priorityAdNetworks;
   final AdSize adSize;
   const EasySmartBannerAd(
-      {Key? key,
+      {super.key,
       this.priorityAdNetworks = const [
         AdNetwork.admob,
         AdNetwork.facebook,
-        AdNetwork.appLovin,
         AdNetwork.unity,
       ],
-      this.adSize = AdSize.banner})
-      : super(key: key);
+      this.adSize = AdSize.banner});
 
   @override
   State<EasySmartBannerAd> createState() => _EasySmartBannerAdState();
@@ -75,9 +72,6 @@ class _EasySmartBannerAdState extends State<EasySmartBannerAd> {
       return true;
     } else if (adNetwork == AdNetwork.facebook &&
         adIdManager.fbAdIds?.bannerId != null) {
-      return true;
-    } else if (adNetwork == AdNetwork.appLovin &&
-        adIdManager.appLovinAdIds?.bannerId != null) {
       return true;
     } else if (adNetwork == AdNetwork.unity &&
         adIdManager.unityAdIds?.bannerId != null) {

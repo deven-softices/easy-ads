@@ -1,16 +1,10 @@
 import 'dart:async';
-
-import 'package:applovin_max/applovin_max.dart';
 import 'package:collection/collection.dart';
 import 'package:easy_ads_flutter/easy_ads_flutter.dart';
 import 'package:easy_ads_flutter/src/easy_admob/easy_admob_interstitial_ad.dart';
 import 'package:easy_ads_flutter/src/easy_admob/easy_admob_rewarded_ad.dart';
-import 'package:easy_ads_flutter/src/easy_applovin/easy_applovin_banner_ad.dart';
-import 'package:easy_ads_flutter/src/easy_applovin/easy_applovin_interstitial_ad.dart';
-import 'package:easy_ads_flutter/src/easy_applovin/easy_applovin_rewarded_ad.dart';
 import 'package:easy_ads_flutter/src/easy_facebook/easy_facebook_banner_ad.dart';
 import 'package:easy_ads_flutter/src/easy_facebook/easy_facebook_full_screen_ad.dart';
-import 'package:easy_ads_flutter/src/easy_unity/easy_unity_ad.dart';
 import 'package:easy_ads_flutter/src/utils/auto_hiding_loader_dialog.dart';
 import 'package:easy_ads_flutter/src/utils/easy_event_controller.dart';
 import 'package:easy_ads_flutter/src/utils/easy_logger.dart';
@@ -121,16 +115,6 @@ class EasyAds {
       );
     }
 
-    final appLovinSdkId = manager.appLovinAdIds?.appId;
-    if (appLovinSdkId != null && appLovinSdkId.isNotEmpty) {
-      EasyAds.instance._initAppLovin(
-        sdkKey: appLovinSdkId,
-        keywords: adMobAdRequest?.keywords,
-        isAgeRestrictedUser: isAgeRestrictedUserForApplovin,
-        interstitialAdUnitId: manager.appLovinAdIds?.interstitialId,
-        rewardedAdUnitId: manager.appLovinAdIds?.rewardedId,
-      );
-    }
   }
 
   /// Returns [EasyAdBase] if ad is created successfully. It assumes that you have already assigned banner id in Ad Id Manager
@@ -152,30 +136,12 @@ class EasyAds {
           _eventController.setupEvents(ad);
         }
         break;
-      case AdNetwork.unity:
-        final bannerId = adIdManager.unityAdIds?.bannerId;
-        assert(bannerId != null,
-            'You are trying to create a banner and Unity Banner id is null in ad id manager');
-        if (bannerId != null) {
-          ad = EasyUnityBannerAd(bannerId, adSize: adSize);
-          _eventController.setupEvents(ad);
-        }
-        break;
       case AdNetwork.facebook:
         final bannerId = adIdManager.fbAdIds?.bannerId;
         assert(bannerId != null,
             'You are trying to create a banner and Facebook Banner id is null in ad id manager');
         if (bannerId != null) {
           ad = EasyFacebookBannerAd(bannerId, adSize: adSize);
-          _eventController.setupEvents(ad);
-        }
-        break;
-      case AdNetwork.appLovin:
-        final bannerId = adIdManager.appLovinAdIds?.bannerId;
-        assert(bannerId != null,
-            'You are trying to create a banner and Applovin Banner id is null in ad id manager');
-        if (bannerId != null) {
-          ad = EasyApplovinBannerAd(bannerId);
           _eventController.setupEvents(ad);
         }
         break;
@@ -229,51 +195,6 @@ class EasyAds {
     }
   }
 
-  Future<void> _initAppLovin({
-    required String sdkKey,
-    bool? isAgeRestrictedUser,
-    String? interstitialAdUnitId,
-    String? rewardedAdUnitId,
-    List<String>? keywords,
-  }) async {
-    final response = await AppLovinMAX.initialize(sdkKey);
-
-    AppLovinMAX.targetingData.maximumAdContentRating =
-        isAgeRestrictedUser == true
-            ? AdContentRating.allAudiences
-            : AdContentRating.none;
-
-    if (keywords != null) {
-      AppLovinMAX.targetingData.keywords = keywords;
-    }
-
-    if (response != null) {
-      _eventController.fireNetworkInitializedEvent(AdNetwork.appLovin, true);
-    } else {
-      _eventController.fireNetworkInitializedEvent(AdNetwork.appLovin, false);
-    }
-
-    // init interstitial ads
-    if (interstitialAdUnitId != null &&
-        _interstitialAds.doesNotContain(
-            AdNetwork.appLovin, AdUnitType.interstitial)) {
-      final ad = EasyApplovinInterstitialAd(interstitialAdUnitId);
-      _interstitialAds.add(ad);
-      _eventController.setupEvents(ad);
-
-      await ad.load();
-    }
-
-    // init rewarded ads
-    if (rewardedAdUnitId != null &&
-        _rewardedAds.doesNotContain(AdNetwork.appLovin, AdUnitType.rewarded)) {
-      final ad = EasyApplovinRewardedAd(rewardedAdUnitId);
-      _rewardedAds.add(ad);
-      _eventController.setupEvents(ad);
-
-      await ad.load();
-    }
-  }
 
   /// * [unityGameId] - identifier from Project Settings in Unity Dashboard.
   /// * [testMode] - if true, then test ads are shown.
@@ -296,26 +217,6 @@ class EasyAds {
       );
     }
 
-    // init interstitial ads
-    if (interstitialPlacementId != null &&
-        _interstitialAds.doesNotContain(
-            AdNetwork.unity, AdUnitType.interstitial)) {
-      final ad = EasyUnityAd(interstitialPlacementId, AdUnitType.interstitial);
-      _interstitialAds.add(ad);
-      _eventController.setupEvents(ad);
-
-      await ad.load();
-    }
-
-    // init rewarded ads
-    if (rewardedPlacementId != null &&
-        _rewardedAds.doesNotContain(AdNetwork.unity, AdUnitType.rewarded)) {
-      final ad = EasyUnityAd(rewardedPlacementId, AdUnitType.rewarded);
-      _rewardedAds.add(ad);
-      _eventController.setupEvents(ad);
-
-      await ad.load();
-    }
   }
 
   Future _initFacebook({

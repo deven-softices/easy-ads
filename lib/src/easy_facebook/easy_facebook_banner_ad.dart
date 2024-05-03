@@ -9,9 +9,9 @@ class EasyFacebookBannerAd extends EasyAdBase {
   final admob.AdSize? adSize;
 
   EasyFacebookBannerAd(
-    String adUnitId, {
+    super.adUnitId, {
     this.adSize = admob.AdSize.banner,
-  }) : super(adUnitId);
+  });
 
   bool _isAdLoaded = false;
 

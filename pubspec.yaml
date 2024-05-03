@@ -11,12 +11,14 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
   google_mobile_ads: ^5.0.0
   collection: ^1.18.0
   unity_ads_plugin: ^0.3.13
-  applovin_max: ^3.9.2
-  easy_audience_network: ^0.0.6
   logger: ^2.2.0
+  easy_audience_network:
+    git:
+      url: https://github.com/deven-softices/audience_network_flutter.git
 
 dev_dependencies:
   flutter_lints: ^3.0.2

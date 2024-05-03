@@ -6,12 +6,11 @@ import 'package:easy_audience_network/easy_audience_network.dart';
 class EasyFacebookFullScreenAd extends EasyAdBase {
   final AdUnitType _adUnitType;
   bool _isAdLoaded = false;
-  EasyFacebookFullScreenAd(String adUnitId, this._adUnitType)
+  EasyFacebookFullScreenAd(super.adUnitId, this._adUnitType)
       : assert(
             _adUnitType == AdUnitType.interstitial ||
                 _adUnitType == AdUnitType.rewarded,
-            'Ad Unit Type must be rewarded or interstitial'),
-        super(adUnitId);
+            'Ad Unit Type must be rewarded or interstitial');
 
   @override
   AdNetwork get adNetwork => AdNetwork.facebook;
